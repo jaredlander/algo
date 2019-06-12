@@ -2,8 +2,9 @@
 - name: Add the repository
   apt_repository:
     state: present
-    codename: bionic
+    codename: "{{ ansible_distribution_release }}"
     repo: ppa:shevchuk/dnscrypt-proxy
+  when: ansible_distribution_version is version_compare('19.04', '<')
   register: result
   until: result is succeeded
   retries: 10
@@ -12,7 +13,7 @@
 - name: Install dnscrypt-proxy
   apt:
     name: dnscrypt-proxy
-    state: latest
+    state: present
     update_cache: true
 
 - name: Configure unattended-upgrades
@@ -37,7 +38,7 @@
     command: aa-enforce usr.bin.dnscrypt-proxy
     changed_when: false
   tags: apparmor
-  when: apparmor_enabled|default(false)|bool == true
+  when: apparmor_enabled|default(false)|bool
 
 - name: Ubuntu | Ensure that the dnscrypt-proxy service directory exist
   file:

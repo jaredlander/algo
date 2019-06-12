@@ -7,6 +7,7 @@
   with_items:
     - private
     - public
+    - preshared
   delegate_to: localhost
   become: false
 
@@ -74,7 +75,6 @@
       mode: "0600"
     notify: restart wireguard
   tags: update-users
-
 
 - name: WireGuard enabled and started
   service:
